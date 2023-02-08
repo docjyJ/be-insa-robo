@@ -4,8 +4,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
 <meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
-<meta name="generator" content="AsciiDoc 8.6.10" />
-<title>Building a kinematics chain</title>
+<meta name="generator" content="AsciiDoc 9.0.0rc1" />
+<title>Understanding the kinematic chain</title>
 <style type="text/css">
 /* Shared CSS for AsciiDoc xhtml11 and html5 backends */
 
@@ -436,7 +436,7 @@ thead, p.table.header {
 p.table {
   margin-top: 0;
 }
-/* Because the table frame attribute is overriden by CSS in most browsers. */
+/* Because the table frame attribute is overridden by CSS in most browsers. */
 div.tableblock > table[frame="void"] {
   border-style: none;
 }
@@ -728,67 +728,35 @@ install: function(toclevels) {
 }
 
 }
-asciidoc.install(2);
+asciidoc.install();
 /*]]>*/
 </script>
 </head>
 <body class="article">
 <div id="header">
-<h1>Building a kinematics chain</h1>
-<div id="toc">
-  <div id="toctitle">Table of Contents</div>
-  <noscript><p><b>JavaScript must be enabled in your browser to display the table of contents.</b></p></noscript>
-</div>
+<h1>Understanding the kinematic chain</h1>
 </div>
 <div id="content">
 <div class="sect1">
 <h2 id="_objective">Objective</h2>
 <div class="sectionbody">
-<div class="paragraph"><p>Build a biped robot by assembling joints and links</p></div>
+<div class="paragraph"><p>Understand the notion of kinematic chain and of configuration</p></div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_displaying_objects">Displaying objects</h2>
+<h2 id="_displaying_talos">Displaying Talos</h2>
 <div class="sectionbody">
-<div class="paragraph"><p>Open a python terminal and go to the project directory.
+<div class="paragraph"><p>Open a python terminal and go to the <code>script</code> directory.
 By typing CTRL+SHIFT+T in the terminal, you can open another terminal in the
 same window.</p></div>
-<div class="paragraph"><p>In the first terminal, type</p></div>
-<div class="listingblock">
-<div class="content"><!-- Generator: GNU source-highlight
-by Lorenzo Bettini
-http://www.lorenzobettini.it
-http://www.gnu.org/software/src-highlite -->
-<pre><tt><span style="font-weight: bold"><span style="color: #0000FF">source</span></span> config<span style="color: #990000">.</span>sh
-gepetto-gui</tt></pre></div></div>
-<div class="paragraph"><p>A window opens that we call the viewer.</p></div>
-<div class="paragraph"><p>In the second terminal, type</p></div>
-<div class="listingblock">
-<div class="content"><!-- Generator: GNU source-highlight
-by Lorenzo Bettini
-http://www.lorenzobettini.it
-http://www.gnu.org/software/src-highlite -->
-<pre><tt>source config<span style="color: #990000">.</span>sh
-python <span style="color: #990000">-</span>i example_display<span style="color: #990000">.</span>py</tt></pre></div></div>
-<div class="paragraph"><p>You should see three objects in the viewer: a sphere, a box and a cylinder.</p></div>
-<div class="paragraph"><p>Look at the code in files</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-<code>display.py</code>,
-</p>
-</li>
-<li>
-<p>
-<code>example_display.py</code>
-</p>
-</li>
-</ul></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">Each terminal should be initialized. Initialization depends on the installation: <code>conda activate</code> or <code>source config.sh</code>.</td>
+</tr></table>
 </div>
-</div>
-<div class="sect1">
-<h2 id="_building_a_kinematic_chain">Building a kinematic chain</h2>
-<div class="sectionbody">
 <div class="paragraph"><p>In the first terminal, type</p></div>
 <div class="listingblock">
 <div class="content"><!-- Generator: GNU source-highlight
@@ -796,96 +764,159 @@ by Lorenzo Bettini
 http://www.lorenzobettini.it
 http://www.gnu.org/software/src-highlite -->
 <pre><tt>gepetto-gui</tt></pre></div></div>
+<div class="paragraph"><p>A window opens that we call the viewer.</p></div>
 <div class="paragraph"><p>In the second terminal, type</p></div>
 <div class="listingblock">
 <div class="content"><!-- Generator: GNU source-highlight
 by Lorenzo Bettini
 http://www.lorenzobettini.it
 http://www.gnu.org/software/src-highlite -->
-<pre><tt>python <span style="color: #990000">-</span>i example_robot<span style="color: #990000">.</span>py</tt></pre></div></div>
-<div class="paragraph"><p>You should see a kinematic chain moving with constant joint velocity</p></div>
-<div class="paragraph"><p>Look at the code in files</p></div>
+<pre><tt>python <span style="color: #990000">-</span>i talos<span style="color: #990000">.</span>py</tt></pre></div></div>
+<div class="paragraph"><p>You should see a humanoid robot called Talos.</p></div>
+<div class="paragraph"><p>Look at the code in file</p></div>
 <div class="ulist"><ul>
 <li>
 <p>
-<code>robot_arm.py</code>,
-</p>
-</li>
-<li>
-<p>
-<code>example_robot.py</code>
+<code>talos.py</code>,
 </p>
 </li>
 </ul></div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_exercise_1_1">Exercise 1.1</h2>
+<h2 id="_playing_with_the_configuration_vector">Playing with the configuration vector</h2>
 <div class="sectionbody">
-<div class="imageblock">
-<div class="content">
-<img src="biped-robot.png" alt="biped robot" width="15%" />
-</div>
-</div>
-<div class="paragraph"><p>Build a kinematic chain composed of a trunc and two legs with six degrees of
-freedom each. Each leg will be composed of the following joints</p></div>
+<div class="paragraph"><p>In the python terminal, a variable of type <code>numpy.array</code> is defined:</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="color: #990000">&gt;&gt;&gt;</span> q0
+<span style="font-weight: bold"><span style="color: #000000">array</span></span><span style="color: #990000">([</span><span style="color: #993399">0</span><span style="color: #990000">.,</span> <span style="color: #993399">0</span><span style="color: #990000">.,</span> <span style="color: #993399">0</span><span style="color: #990000">.,</span> <span style="color: #993399">0</span><span style="color: #990000">.,</span> <span style="color: #993399">0</span><span style="color: #990000">.,</span> <span style="color: #993399">0</span><span style="color: #990000">.,</span> <span style="color: #993399">1</span><span style="color: #990000">.,</span> <span style="color: #993399">0</span><span style="color: #990000">.,</span> <span style="color: #993399">0</span><span style="color: #990000">.,</span> <span style="color: #993399">0</span><span style="color: #990000">.,</span> <span style="color: #993399">0</span><span style="color: #990000">.,</span> <span style="color: #993399">0</span><span style="color: #990000">.,</span> <span style="color: #993399">0</span><span style="color: #990000">.,</span> <span style="color: #993399">0</span><span style="color: #990000">.,</span> <span style="color: #993399">0</span><span style="color: #990000">.,</span> <span style="color: #993399">0</span><span style="color: #990000">.,</span> <span style="color: #993399">0</span><span style="color: #990000">.,</span>
+       <span style="color: #993399">0</span><span style="color: #990000">.,</span> <span style="color: #993399">0</span><span style="color: #990000">.,</span> <span style="color: #993399">0</span><span style="color: #990000">.,</span> <span style="color: #993399">0</span><span style="color: #990000">.,</span> <span style="color: #993399">0</span><span style="color: #990000">.,</span> <span style="color: #993399">0</span><span style="color: #990000">.,</span> <span style="color: #993399">0</span><span style="color: #990000">.,</span> <span style="color: #993399">0</span><span style="color: #990000">.,</span> <span style="color: #993399">0</span><span style="color: #990000">.,</span> <span style="color: #993399">0</span><span style="color: #990000">.,</span> <span style="color: #993399">0</span><span style="color: #990000">.,</span> <span style="color: #993399">0</span><span style="color: #990000">.,</span> <span style="color: #993399">0</span><span style="color: #990000">.,</span> <span style="color: #993399">0</span><span style="color: #990000">.,</span> <span style="color: #993399">0</span><span style="color: #990000">.,</span> <span style="color: #993399">0</span><span style="color: #990000">.,</span> <span style="color: #993399">0</span><span style="color: #990000">.,</span>
+       <span style="color: #993399">0</span><span style="color: #990000">.,</span> <span style="color: #993399">0</span><span style="color: #990000">.,</span> <span style="color: #993399">0</span><span style="color: #990000">.,</span> <span style="color: #993399">0</span><span style="color: #990000">.,</span> <span style="color: #993399">0</span><span style="color: #990000">.])</span></tt></pre></div></div>
+<div class="paragraph"><p>This vector represents the configuration of the robot as displayed in the viewer.</p></div>
 <div class="ulist"><ul>
 <li>
 <p>
-a rotation joint around z axis (hip),
+The 3 first values represent the translation of the waist,
 </p>
 </li>
 <li>
 <p>
-a rotation joint around y axis (hip),
+the 4 following values reprensent the orientation of the waist as a Quaternion: xi + yj + zk + w,
+ in this exercise and the following ones, this orientation will remain the identity.
 </p>
 </li>
 <li>
 <p>
-a rotation joint around x axis (hip),
-</p>
-</li>
-<li>
-<p>
-a rotation joint around y axis  (knee),
-</p>
-</li>
-<li>
-<p>
-a rotation joint around y axis (ankle),
-</p>
-</li>
-<li>
-<p>
-a rotation joint around x axis (ankle).
+the following values represent each joint angle. A dictionary in the variable <code>robot</code> maps
+joint names with their index in the configuration vector.
 </p>
 </li>
 </ul></div>
-<div class="paragraph"><p>Write your code in file <code>legged_robot.py</code>.</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="color: #990000">&gt;&gt;&gt;</span> robot<span style="color: #990000">.</span>name_to_config_index
+<span style="color: #990000">{</span><span style="color: #FF0000">'universe'</span><span style="color: #990000">:</span> <span style="color: #990000">-</span><span style="color: #993399">1</span><span style="color: #990000">,</span> <span style="color: #FF0000">'root_joint'</span><span style="color: #990000">:</span> <span style="color: #993399">0</span><span style="color: #990000">,</span> <span style="color: #FF0000">'leg_left_1_joint'</span><span style="color: #990000">:</span> <span style="color: #993399">7</span><span style="color: #990000">,</span> <span style="color: #FF0000">'leg_left_2_joint'</span><span style="color: #990000">:</span> <span style="color: #993399">8</span><span style="color: #990000">,</span> <span style="color: #FF0000">'leg_left_3_joint'</span><span style="color: #990000">:</span> <span style="color: #993399">9</span><span style="color: #990000">,</span> <span style="color: #FF0000">'leg_left_4_joint'</span><span style="color: #990000">:</span> <span style="color: #993399">10</span><span style="color: #990000">,</span> <span style="color: #FF0000">'leg_left_5_joint'</span><span style="color: #990000">:</span> <span style="color: #993399">11</span><span style="color: #990000">,</span> <span style="color: #FF0000">'leg_left_6_joint'</span><span style="color: #990000">:</span> <span style="color: #993399">12</span><span style="color: #990000">,</span> <span style="color: #FF0000">'leg_right_1_joint'</span><span style="color: #990000">:</span> <span style="color: #993399">13</span><span style="color: #990000">,</span> <span style="color: #FF0000">'leg_right_2_joint'</span><span style="color: #990000">:</span> <span style="color: #993399">14</span><span style="color: #990000">,</span> <span style="color: #FF0000">'leg_right_3_joint'</span><span style="color: #990000">:</span> <span style="color: #993399">15</span><span style="color: #990000">,</span> <span style="color: #FF0000">'leg_right_4_joint'</span><span style="color: #990000">:</span> <span style="color: #993399">16</span><span style="color: #990000">,</span> <span style="color: #FF0000">'leg_right_5_joint'</span><span style="color: #990000">:</span> <span style="color: #993399">17</span><span style="color: #990000">,</span> <span style="color: #FF0000">'leg_right_6_joint'</span><span style="color: #990000">:</span> <span style="color: #993399">18</span><span style="color: #990000">,</span> <span style="color: #FF0000">'torso_1_joint'</span><span style="color: #990000">:</span> <span style="color: #993399">19</span><span style="color: #990000">,</span> <span style="color: #FF0000">'torso_2_joint'</span><span style="color: #990000">:</span> <span style="color: #993399">20</span><span style="color: #990000">,</span> <span style="color: #FF0000">'arm_left_1_joint'</span><span style="color: #990000">:</span> <span style="color: #993399">21</span><span style="color: #990000">,</span> <span style="color: #FF0000">'arm_left_2_joint'</span><span style="color: #990000">:</span> <span style="color: #993399">22</span><span style="color: #990000">,</span> <span style="color: #FF0000">'arm_left_3_joint'</span><span style="color: #990000">:</span> <span style="color: #993399">23</span><span style="color: #990000">,</span> <span style="color: #FF0000">'arm_left_4_joint'</span><span style="color: #990000">:</span> <span style="color: #993399">24</span><span style="color: #990000">,</span> <span style="color: #FF0000">'arm_left_5_joint'</span><span style="color: #990000">:</span> <span style="color: #993399">25</span><span style="color: #990000">,</span> <span style="color: #FF0000">'arm_left_6_joint'</span><span style="color: #990000">:</span> <span style="color: #993399">26</span><span style="color: #990000">,</span> <span style="color: #FF0000">'arm_left_7_joint'</span><span style="color: #990000">:</span> <span style="color: #993399">27</span><span style="color: #990000">,</span> <span style="color: #FF0000">'gripper_left_joint'</span><span style="color: #990000">:</span> <span style="color: #993399">28</span><span style="color: #990000">,</span> <span style="color: #FF0000">'arm_right_1_joint'</span><span style="color: #990000">:</span> <span style="color: #993399">29</span><span style="color: #990000">,</span> <span style="color: #FF0000">'arm_right_2_joint'</span><span style="color: #990000">:</span> <span style="color: #993399">30</span><span style="color: #990000">,</span> <span style="color: #FF0000">'arm_right_3_joint'</span><span style="color: #990000">:</span> <span style="color: #993399">31</span><span style="color: #990000">,</span> <span style="color: #FF0000">'arm_right_4_joint'</span><span style="color: #990000">:</span> <span style="color: #993399">32</span><span style="color: #990000">,</span> <span style="color: #FF0000">'arm_right_5_joint'</span><span style="color: #990000">:</span> <span style="color: #993399">33</span><span style="color: #990000">,</span> <span style="color: #FF0000">'arm_right_6_joint'</span><span style="color: #990000">:</span> <span style="color: #993399">34</span><span style="color: #990000">,</span> <span style="color: #FF0000">'arm_right_7_joint'</span><span style="color: #990000">:</span> <span style="color: #993399">35</span><span style="color: #990000">,</span> <span style="color: #FF0000">'gripper_right_joint'</span><span style="color: #990000">:</span> <span style="color: #993399">36</span><span style="color: #990000">,</span> <span style="color: #FF0000">'head_1_joint'</span><span style="color: #990000">:</span> <span style="color: #993399">37</span><span style="color: #990000">,</span> <span style="color: #FF0000">'head_2_joint'</span><span style="color: #990000">:</span> <span style="color: #993399">38</span><span style="color: #990000">}</span></tt></pre></div></div>
+<div class="paragraph"><p>For example, you can move the left arm by executing the following commands. Look at the viewer when executing the last command:</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>i <span style="color: #990000">=</span> robot<span style="color: #990000">.</span>name_to_config_index<span style="color: #990000">[</span><span style="color: #FF0000">"arm_left_2_joint"</span><span style="color: #990000">]</span>
+q0<span style="color: #990000">[</span>i<span style="color: #990000">]</span> <span style="color: #990000">+=</span> <span style="color: #990000">.</span><span style="color: #993399">1</span>
+robot<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">display</span></span><span style="color: #990000">(</span>q0<span style="color: #990000">)</span></tt></pre></div></div>
+<div class="paragraph"><p>Another dictionary maps joint names to their index in the vector of joints:</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="color: #990000">&gt;&gt;&gt;</span> robot<span style="color: #990000">.</span>name_to_joint_index
+<span style="color: #990000">{</span><span style="color: #FF0000">'universe'</span><span style="color: #990000">:</span> <span style="color: #993399">0</span><span style="color: #990000">,</span> <span style="color: #FF0000">'root_joint'</span><span style="color: #990000">:</span> <span style="color: #993399">1</span><span style="color: #990000">,</span> <span style="color: #FF0000">'leg_left_1_joint'</span><span style="color: #990000">:</span> <span style="color: #993399">2</span><span style="color: #990000">,</span> <span style="color: #FF0000">'leg_left_2_joint'</span><span style="color: #990000">:</span> <span style="color: #993399">3</span><span style="color: #990000">,</span> <span style="color: #FF0000">'leg_left_3_joint'</span><span style="color: #990000">:</span> <span style="color: #993399">4</span><span style="color: #990000">,</span> <span style="color: #FF0000">'leg_left_4_joint'</span><span style="color: #990000">:</span> <span style="color: #993399">5</span><span style="color: #990000">,</span> <span style="color: #FF0000">'leg_left_5_joint'</span><span style="color: #990000">:</span> <span style="color: #993399">6</span><span style="color: #990000">,</span> <span style="color: #FF0000">'leg_left_6_joint'</span><span style="color: #990000">:</span> <span style="color: #993399">7</span><span style="color: #990000">,</span> <span style="color: #FF0000">'leg_right_1_joint'</span><span style="color: #990000">:</span> <span style="color: #993399">8</span><span style="color: #990000">,</span> <span style="color: #FF0000">'leg_right_2_joint'</span><span style="color: #990000">:</span> <span style="color: #993399">9</span><span style="color: #990000">,</span> <span style="color: #FF0000">'leg_right_3_joint'</span><span style="color: #990000">:</span> <span style="color: #993399">10</span><span style="color: #990000">,</span> <span style="color: #FF0000">'leg_right_4_joint'</span><span style="color: #990000">:</span> <span style="color: #993399">11</span><span style="color: #990000">,</span> <span style="color: #FF0000">'leg_right_5_joint'</span><span style="color: #990000">:</span> <span style="color: #993399">12</span><span style="color: #990000">,</span> <span style="color: #FF0000">'leg_right_6_joint'</span><span style="color: #990000">:</span> <span style="color: #993399">13</span><span style="color: #990000">,</span> <span style="color: #FF0000">'torso_1_joint'</span><span style="color: #990000">:</span> <span style="color: #993399">14</span><span style="color: #990000">,</span> <span style="color: #FF0000">'torso_2_joint'</span><span style="color: #990000">:</span> <span style="color: #993399">15</span><span style="color: #990000">,</span> <span style="color: #FF0000">'arm_left_1_joint'</span><span style="color: #990000">:</span> <span style="color: #993399">16</span><span style="color: #990000">,</span> <span style="color: #FF0000">'arm_left_2_joint'</span><span style="color: #990000">:</span> <span style="color: #993399">17</span><span style="color: #990000">,</span> <span style="color: #FF0000">'arm_left_3_joint'</span><span style="color: #990000">:</span> <span style="color: #993399">18</span><span style="color: #990000">,</span> <span style="color: #FF0000">'arm_left_4_joint'</span><span style="color: #990000">:</span> <span style="color: #993399">19</span><span style="color: #990000">,</span> <span style="color: #FF0000">'arm_left_5_joint'</span><span style="color: #990000">:</span> <span style="color: #993399">20</span><span style="color: #990000">,</span> <span style="color: #FF0000">'arm_left_6_joint'</span><span style="color: #990000">:</span> <span style="color: #993399">21</span><span style="color: #990000">,</span> <span style="color: #FF0000">'arm_left_7_joint'</span><span style="color: #990000">:</span> <span style="color: #993399">22</span><span style="color: #990000">,</span> <span style="color: #FF0000">'gripper_left_joint'</span><span style="color: #990000">:</span> <span style="color: #993399">23</span><span style="color: #990000">,</span> <span style="color: #FF0000">'arm_right_1_joint'</span><span style="color: #990000">:</span> <span style="color: #993399">24</span><span style="color: #990000">,</span> <span style="color: #FF0000">'arm_right_2_joint'</span><span style="color: #990000">:</span> <span style="color: #993399">25</span><span style="color: #990000">,</span> <span style="color: #FF0000">'arm_right_3_joint'</span><span style="color: #990000">:</span> <span style="color: #993399">26</span><span style="color: #990000">,</span> <span style="color: #FF0000">'arm_right_4_joint'</span><span style="color: #990000">:</span> <span style="color: #993399">27</span><span style="color: #990000">,</span> <span style="color: #FF0000">'arm_right_5_joint'</span><span style="color: #990000">:</span> <span style="color: #993399">28</span><span style="color: #990000">,</span> <span style="color: #FF0000">'arm_right_6_joint'</span><span style="color: #990000">:</span> <span style="color: #993399">29</span><span style="color: #990000">,</span> <span style="color: #FF0000">'arm_right_7_joint'</span><span style="color: #990000">:</span> <span style="color: #993399">30</span><span style="color: #990000">,</span> <span style="color: #FF0000">'gripper_right_joint'</span><span style="color: #990000">:</span> <span style="color: #993399">31</span><span style="color: #990000">,</span> <span style="color: #FF0000">'head_1_joint'</span><span style="color: #990000">:</span> <span style="color: #993399">32</span><span style="color: #990000">,</span> <span style="color: #FF0000">'head_2_joint'</span><span style="color: #990000">:</span> <span style="color: #993399">33</span><span style="color: #990000">}</span></tt></pre></div></div>
+<div class="paragraph"><p>Note that these two dictionaries are different. Note that variable <code>robot</code> also contains 3 members
+called</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<code>waistJointId</code>,
+</p>
+</li>
+<li>
+<p>
+<code>leftFootJointId</code>,
+</p>
+</li>
+<li>
+<p>
+<code>rightFootJointId</code>,
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>that contain the indices of the latter dictionary corresponding to the waist, left foot and right
+foot.</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>robot<span style="color: #990000">.</span>waistJointId
+robot<span style="color: #990000">.</span>leftFootJointId
+robot<span style="color: #990000">.</span>rightFootJointId</tt></pre></div></div>
+<div class="paragraph"><p>These members will be useful in exercise 2.</p></div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_exercise_1_2">Exercise 1.2</h2>
+<h2 id="_computing_forward_kinematics">Computing forward kinematics</h2>
 <div class="sectionbody">
-<div class="paragraph"><p>Append your kinematic chain to 3 prismatic joints</p></div>
-<div class="ulist"><ul>
-<li>
-<p>
-a prismatic joint along x,
-</p>
-</li>
-<li>
-<p>
-a prismatic joint along y,
-</p>
-</li>
-<li>
-<p>
-a prismatic joint along z.
-</p>
-</li>
-</ul></div>
-<div class="paragraph"><p>Use <code>JointModelPX</code>,<code>JointModelPY</code>,<code>JointModelPZ</code> from module <code>pinocchio</code>.</p></div>
+<div class="paragraph"><p>To compute forward kinematics, we need to create a data structure that will store the results of the
+computation and then call function <code>forwardKinematics</code> with the robot model, the data structure and
+the robot configuration.</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>data <span style="color: #990000">=</span> robot<span style="color: #990000">.</span>model<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">createData</span></span><span style="color: #990000">()</span>
+<span style="font-weight: bold"><span style="color: #000080">from</span></span> pinocchio <span style="font-weight: bold"><span style="color: #000080">import</span></span> forwardKinematics
+<span style="font-weight: bold"><span style="color: #000000">forwardKinematics</span></span><span style="color: #990000">(</span>robot<span style="color: #990000">.</span>model<span style="color: #990000">,</span> data<span style="color: #990000">,</span> q0<span style="color: #990000">)</span></tt></pre></div></div>
+<div class="paragraph"><p>The poses of each joint are stored in variable <code>data</code> and can be retrieved using the joint index
+as follows:</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>i <span style="color: #990000">=</span> robot<span style="color: #990000">.</span>name_to_joint_index<span style="color: #990000">[</span><span style="color: #FF0000">"head_2_joint"</span><span style="color: #990000">]</span>
+data<span style="color: #990000">.</span>oMi<span style="color: #990000">[</span>i<span style="color: #990000">]</span></tt></pre></div></div>
+<div class="paragraph"><p><code>data.oMi[i]</code> represents a rigid-body displacement: <code>&lt;class 'pinocchio.pinocchio_pywrap.SE3'&gt;</code>.
+The latter class has a method called <code>act</code> that computes the image of a point in space.</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>P <span style="color: #990000">=</span> np<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">array</span></span><span style="color: #990000">([</span><span style="color: #993399">1</span><span style="color: #990000">,</span><span style="color: #993399">0</span><span style="color: #990000">,</span><span style="color: #993399">0</span><span style="color: #990000">])</span>
+data<span style="color: #990000">.</span>oMi<span style="color: #990000">[</span>i<span style="color: #990000">].</span><span style="font-weight: bold"><span style="color: #000000">act</span></span><span style="color: #990000">(</span>P<span style="color: #990000">)</span></tt></pre></div></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_computing_the_center_of_mass">Computing the center of mass</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Similarly, the center of mass of the robot can be obtained with the following lines of code:</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-weight: bold"><span style="color: #000080">from</span></span> pinocchio <span style="font-weight: bold"><span style="color: #000080">import</span></span> centerOfMass
+com <span style="color: #990000">=</span> <span style="font-weight: bold"><span style="color: #000000">centerOfMass</span></span><span style="color: #990000">(</span>robot<span style="color: #990000">.</span>model<span style="color: #990000">,</span> data<span style="color: #990000">,</span> q0<span style="color: #990000">)</span></tt></pre></div></div>
 </div>
 </div>
 </div>
@@ -893,7 +924,7 @@ a prismatic joint along z.
 <div id="footer">
 <div id="footer-text">
 Last updated
- 2019-12-19 11:53:54 CET
+ 2023-02-07 14:25:38 CET
 </div>
 </div>
 </body>
