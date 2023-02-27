@@ -119,7 +119,7 @@ Unfortunately, the solution to this differential equation is uniquely defined by
 For these reason, we propose to compute the trajectory of the center of mass by solving an optimal control problem:
 \begin{equation}
   \begin{array}{l}
-    \min_{\x()}\frac{1}{2}\int_0^T \|\x(t) - \frac{z}{g}\ddx(t) - \vect{CoP}_{des}(t)\|^2 + \alpha^2\|\dx(t)\|^2 dt\\
+    \min_{\x()}\frac{1}{2}\int_0^T \|\x(t) - \frac{z}{g}\ddx(t) - \vect{CoP}_{des}(t)\|^2 dt\\
     \x(0)=\x_0\\
     \x(T)=\x_f\\
     \dx(0)=\dx(T)=0
@@ -129,7 +129,6 @@ For these reason, we propose to compute the trajectory of the center of mass by 
 where
 \begin{itemize}
 \item $T$ is the duration of the trajectory,
-\item $\alpha^2$ is a small positive number: penalizing the norm of the velocity will stabilize the solution,
 \item $\x_0$ and $\x_F$ are the initial and final positions of the center of mass.
 \end{itemize}
 
@@ -199,7 +198,7 @@ If we define $F=(\mathbf{f}(0), \mathbf{f}(\Delta t),\cdots,\mathbf{f}(N\Delta t
 Using this approximation, (\ref{eq:optimal-control}) becomes
 \begin{equation}
   \begin{array}{l}
-    \min_{X}\frac{1}{2}\|X - \frac{z}{g}\ddot{X} - CoP_{des}\|^2 + \frac{1}{2}\alpha^2\|\dot{X}\|^2\\
+    \min_{X}\frac{1}{2}\|X - \frac{z}{g}\ddot{X} - CoP_{des}\|^2\\
     \dx(0)=\dx(T)=0
   \end{array}
   \label{eq:optimal-approx}
@@ -211,16 +210,14 @@ where $CoP_{des}$ is the vector of dimension $2N$ obtained by stacking the value
 Let us temporarily ignore the boundary conditions $\dx(0)=\dx(T)=0$ in~(\ref{eq:optimal-approx}).
 Replacing $\dot{X}$ and $\ddot{X}$ by expressions~(\ref{eq:dotX}) and (\ref{eq:ddotX}), we get
 \begin{eqnarray*}
-&&  \min_{X}\frac{1}{2}\|X - \frac{z}{g}(-\frac{1}{\Delta t^2} (D^TD\,X + D^Td_0))) - CoP_{des}\|^2 + \frac{1}{2}\alpha^2\|\frac{1}{\Delta t}(D\,X + d_0)\|^2\\
-  &=&  \min_{X}\frac{1}{2}\left\|\begin{array}{c}(I_{2N} + \frac{z}{g\Delta t^2}D^TD) X + \frac{z}{g\Delta t^2}D^Td_0 - CoP_{des}\\ \frac{\alpha}{\Delta t}(D\,X + d_0)\end{array}\right\|^2\\
+&&  \min_{X}\frac{1}{2}\|X - \frac{z}{g}(-\frac{1}{\Delta t^2} (D^TD\,X + D^Td_0))) - CoP_{des}\|^2\\
+  &=&  \min_{X}\frac{1}{2}\left\|(I_{2N} + \frac{z}{g\Delta t^2}D^TD) X + \frac{z}{g\Delta t^2}D^Td_0 - CoP_{des}\right\|^2\\
   &=& \min_{X}\frac{1}{2}\left\| AX - b \right\|^2
 \end{eqnarray*}
 with
 $$
-A = \left(\begin{array}{c}I_{2N} + \frac{z}{g\Delta t^2}D^TD\\
-  \frac{\alpha}{\Delta t}D\end{array}\right)\ \mbox{and}\
-  b = \left(\begin{array}{c}CoP_{des} - \frac{z}{g\Delta t^2}D^Td_0\\
-    -\frac{\alpha}{\Delta T}d_0\end{array}\right)
+A = I_{2N} + \frac{z}{g\Delta t^2}D^TD\ \mbox{and}\
+  b = CoP_{des} - \frac{z}{g\Delta t^2}D^Td_0
 $$
 
 \begin{eqnarray}
