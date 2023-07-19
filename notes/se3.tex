@@ -141,7 +141,7 @@ $$
 $$
 If we admit that
 $$
-\left[R^T\omega\right] = R^T\left[\omega\right] R.
+\left[R^T\omega\right]_{\times} = R^T\left[\omega\right]_{\times} R.
 $$
 Then, we can write
 \begin{equation}\label{eq:diff-SE3}
@@ -173,4 +173,23 @@ Similarly, we define the logarithm of a rigid-body transformation as the screw m
   $$d(M_1,M_2) = \|\log M_1^{-1}M_2 \|.$$
 The distance is indeed equal to zero if and only if $M_1=M_2$.
 \end{enumerate}
+
+\section{Notations}
+
+Following the properties outlined in the previous sections, we define the
+following notation. Let $\mathbf{p}_1, \mathbf{p}_2$ be elements of $SO(3)$
+(respectively $SE(3)$):
+$$
+\mathbf{p}_{2} \ominus \mathbf{p}_{1} = \log(p_{1}^{-1}p_{2})
+$$
+is the constant velocity in $\reals^3$ (respectively $\reals^6$) that drives
+$\mathbf{p}_{1}$ to $\mathbf{p}_{2}$.
+
+Similarly, let $\mathbf{u}\in\reals^3$ (respectively $\reals^6$) be a velocity,
+$$
+\mathbf{p}_1 \oplus \mathbf{u} = \mathbf{p}_1 \exp\ \mathbf{u}
+$$
+is the the element of $SO(3)$ (respectively $SE(3)$) reached after following
+the constant velocity $\mathbf{u}$ from $\mathbf{p}_1$.
+
 \end{document}
