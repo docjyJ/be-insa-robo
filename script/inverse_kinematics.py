@@ -29,7 +29,6 @@ import numpy.linalg
 from scipy.optimize import fmin_slsqp
 from pinocchio import forwardKinematics, log, neutral
 import eigenpy
-eigenpy.switchToNumpyArray()
 
 class CallbackLogger:
      def __init__(self):
@@ -78,7 +77,6 @@ if __name__ == "__main__":
      import numpy as np
      from inverse_kinematics import InverseKinematics
      import eigenpy
-     eigenpy.switchToNumpyArray()
 
      robot = Robot ()
      ik = InverseKinematics (robot)
