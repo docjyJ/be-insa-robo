@@ -1,0 +1,2 @@
+conda create -n pinocchio python=3.10
+conda install -n pinocchio -c conda-forge pinocchio gepetto-viewer-corba numpy scipy matplotlib
