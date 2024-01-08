@@ -45,7 +45,6 @@ if __name__ == "__main__":
     import matplotlib.pyplot as plt
     import numpy as np
     start = np.array([0.,0.])
-    steps = [np.array([0, .2]), np.array([.4, -.2]), np.array([.8, .2]), np.array([1.2, -.2])]
     steps = [np.array([0, -.1]), np.array([0.4, .1]),
              np.array([.8, -.1]), np.array([1.2, .1]),
              np.array([1.6, -.1]), np.array([1.6, .1])]

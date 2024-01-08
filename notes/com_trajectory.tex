@@ -116,7 +116,7 @@ $$
 $$
 Unfortunately, the solution to this differential equation is uniquely defined by the initial value and the initial velocity, so there is no way to constrain the final position and the final velocity. Moreover, the solution to the differential equation is unstable.
 
-For these reason, we propose to compute the trajectory of the center of mass by solving an optimal control problem:
+For these reasons, we propose to compute the trajectory of the center of mass by solving an optimal control problem:
 \begin{equation}
   \begin{array}{l}
     \min_{\x()}\frac{1}{2}\int_0^T \|\x(t) - \frac{z}{g}\ddx(t) - \vect{CoP}_{des}(t)\|^2 dt\\
