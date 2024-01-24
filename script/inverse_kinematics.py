@@ -66,10 +66,21 @@ class InverseKinematics (object):
         self.waistRefPose = self.data.oMi [robot.waistJointId].copy ()
 
     def cost (self, q):
-        # write your code here
+        forwardKinematics (self.robot.model, self.data, q)
+        err_lf = log (self.leftFootRefPose.inverse () *
+                          self.data.oMi [self.robot.leftFootJointId])
+        err_rf = log (self.rightFootRefPose.inverse () *
+                          self.data.oMi [self.robot.rightFootJointId])
+        err_w = log (self.waistRefPose.inverse () *
+                         self.data.oMi [self.robot.waistJointId])
+        err = np.concatenate ((err_lf.vector, err_rf.vector, err_w.vector))
+        return np.inner(err, err)
 
     def solve (self, q):
-        # write your code here
+        result = q.copy ()
+        # Remove orientation of freeflyer in configuration
+        q_opt = fmin_slsqp (self.cost, q, f_eqcons=normalized_quaternion, callback=None)
+        return q_opt
 
 if __name__ == "__main__":
      from talos import Robot

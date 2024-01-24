@@ -40,6 +40,17 @@ class CoPDes(Piecewise):
     def __init__(self, start, steps, end):
         super().__init__()
         # write your code here
+        self.segments.append(Affine(0, self.double_support_time, start, steps[0]))
+        t = self.double_support_time
+        for s0, s1 in zip(steps, steps[1:]):
+            self.segments.append(Constant(t, t+self.single_support_time, s0))
+            t += self.single_support_time
+            self.segments.append(Affine(t, t+self.double_support_time, s0, s1))
+            t += self.double_support_time
+        self.segments.append(Affine(t, t+self.double_support_time, s1, end))
+        t += t+self.double_support_time
+        # End with constant function.
+        self.segments.append(Constant(t, t+1, end))
 
 if __name__ == "__main__":
     import matplotlib.pyplot as plt

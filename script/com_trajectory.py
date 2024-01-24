@@ -35,7 +35,6 @@ from cop_des import CoPDes
 class ComTrajectory(object):
     # time discretization step
     delta_t = 1e-2
-    alpha = 0
     g = 9.81
     N = -1
     # Constructor
@@ -55,6 +54,30 @@ class ComTrajectory(object):
         N = int(T/self.delta_t) + 1
         self.N = N
         # write your code here
+        # matrix D
+        self.D = np.zeros(shape=(2*N+2, 2*N))
+        for i in range(N):
+            self.D[2*i:2*i+2,2*i:2*i+2] = I2
+            self.D[2*i+2:2*i+4,2*i:2*i+2] = -I2
+        self.d0 = np.zeros(2*N+2)
+        self.d0[0:2] = -self.start
+        self.d0[2*N:2*N+2] = self.end
+        I2N = np.identity(2*N)
+        self.cop_des = CoPDes(self.start, self.steps, self.end)
+        # Compute CoP des
+        COPdes = np.zeros(2*N)
+        for i in range(N):
+            t = self.delta_t*i
+            COPdes[2*i:2*i+2] = self.cop_des(t)
+        A = I2N + self.z_com/(self.g*self.delta_t**2)*self.D.transpose()@self.D
+        b = COPdes - self.z_com/(self.g*self.delta_t**2)*self.D.transpose()@self.d0
+        C = np.zeros(shape=(2*N,2*N-4))
+        C[2:2*N-2] = np.identity(2*N-4)
+        d = np.zeros(2*N)
+        d[0:2] = self.start
+        d[2*N-2:2*N] = self.end
+        Xbar = pinv(A@C)@(b-A@d)
+        self.X = C@Xbar + d
         return self.X
 
     # Return projection of center of mass on horizontal plane at time t
