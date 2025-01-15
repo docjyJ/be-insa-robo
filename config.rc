@@ -1,1 +1,2 @@
+conda activate pinocchio
 export ROS_PACKAGE_PATH=${PWD}/script

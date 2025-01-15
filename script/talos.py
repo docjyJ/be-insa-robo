@@ -1,4 +1,5 @@
 # Copyright 2023 CNRS
+import sys
 
 # Author: Florent Lamiraux
 
@@ -29,13 +30,10 @@
 # NOTE: this example needs gepetto-gui to be installed
 # usage: launch gepetto-gui and then run this test
 
-import pinocchio as pin
 import numpy as np
-import sys
-import os
-from os.path import dirname, join, abspath
-
+import pinocchio as pin
 from pinocchio.visualize import GepettoVisualizer
+
 
 class Robot(object):
     # Paths to the model of the robot
@@ -44,8 +42,8 @@ class Robot(object):
     urdf_model_path = "./talos_data/robots/talos_reduced.urdf"
 
     def __init__(self):
-        self.model, self.collision_model, self.visual_model = \
-            pin.buildModelsFromUrdf(self.urdf_model_path, self.mesh_dir, pin.JointModelFreeFlyer())
+        self.model, self.collision_model, self.visual_model = pin.buildModelsFromUrdf(self.urdf_model_path, self.mesh_dir, pin.JointModelFreeFlyer())
+
         self.viz = GepettoVisualizer(self.model, self.collision_model, self.visual_model)
         # Store index of each joint in a dictionary
         self.name_to_config_index = dict()
@@ -71,8 +69,9 @@ class Robot(object):
             print(err)
             sys.exit(0)
 
-    def display(self, q):
+    def display(self, q: np.ndarray):
         return self.viz.display(q)
+
 
 if __name__ == "__main__":
     robot = Robot()
