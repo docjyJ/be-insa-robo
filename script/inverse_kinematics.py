@@ -25,11 +25,11 @@
 # POSSIBILITY OF SUCH DAMAGE.
 
 import numpy as np
-from talos import Robot
 import numpy.linalg
-from scipy.optimize import fmin_slsqp
 from pinocchio import forwardKinematics, log, neutral
-import eigenpy
+from scipy.optimize import fmin_slsqp
+
+from talos import Robot
 
 
 class CallbackLogger:
@@ -71,16 +71,16 @@ class InverseKinematics(object):
         self.waistRefPose = self.data.oMi[robot.waistJointId].copy()
 
 
-    def cost(self, q):
+    def cost(self, q) -> float:
+        # write your code here
         forwardKinematics(self.robot.model, self.data, q)
-        err = np.concatenate((
-            log(self.leftFootRefPose.inverse() * self.data.oMi[self.robot.leftFootJointId]),
-            log(self.rightFootRefPose.inverse() * self.data.oMi[self.robot.rightFootJointId]),
-            log(self.waistRefPose.inverse() * self.data.oMi[self.robot.waistJointId])
-        ))
-        return np.inner(err, err)
+        err = np.sum(np.pow(log(self.leftFootRefPose.inverse() * self.data.oMi[self.robot.leftFootJointId]), 2))
+        err += np.sum(np.pow(log(self.rightFootRefPose.inverse() * self.data.oMi[self.robot.rightFootJointId]), 2))
+        err += np.sum(np.pow(log(self.waistRefPose.inverse() * self.data.oMi[self.robot.waistJointId]), 2))
+        return err
 
     def solve(self, q):
+        # write your code here
         return fmin_slsqp(self.cost, q, f_eqcons=normalized_quaternion, callback=CallbackLogger())
 
 

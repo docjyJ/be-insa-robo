@@ -64,15 +64,9 @@ class SwingFootTrajectory(object):
 
 
 def Rz(theta):
-    """
-    Return rotation matrix of angle theta around z-axis
-    """
-    res = np.identity(3)
-    res[0, 0] = cos(theta);
-    res[0, 1] = -sin(theta);
-    res[1, 0] = sin(theta);
-    res[1, 1] = cos(theta);
-    return res
+    return np.array([[cos(theta), -sin(theta), 0],
+                     [sin(theta), cos(theta), 0],
+                     [0, 0, 1]])
 
 
 # Computes a walking whole-body motion
@@ -107,23 +101,17 @@ class WalkingMotion(object):
         self.lf_traj = Piecewise()
         self.rf_traj = Piecewise()
         # write your code here
-        # Compute initial position of feet
         lf_init = data.oMi[self.robot.leftFootJointId].translation
         Rlf_init = data.oMi[self.robot.leftFootJointId].rotation
         rf_init = data.oMi[self.robot.rightFootJointId].translation
         Rrf_init = data.oMi[self.robot.rightFootJointId].rotation
-        # Compute final position of center of mass: between the feet in final pose
         end = .5 * (steps_[-1] + steps_[-2])
-        # Compute desired trajectory of center of pressure
-        # CoP des first goes under the left foot. We add the position of the
-        # left foot as the first step.
         self.com_trajectory = ComTrajectory(com[:2],
                                             list(map(lambda v: v[:2], steps_)),
                                             end[:2], com[2])
         self.com_trajectory.compute()
         t_ss = CoPDes.single_support_time
         t_ds = CoPDes.double_support_time
-        # Keep the feet fixed while CoP moves to first support foot
         lf_pose = np.zeros(4)
         lf_pose[:3] = lf_init
         lf_pose[3] = atan2(Rlf_init[1, 0], Rlf_init[0, 0])
@@ -134,11 +122,9 @@ class WalkingMotion(object):
         self.rf_traj.segments.append(Constant(0, t_ds, rf_pose))
         t = t_ds
         swing_foot = "left"
-        # Iteratively move right then left foot
         for step in steps_[1:]:
             final_swing_foot = np.zeros(4)
             final_swing_foot[:2] = step[:2]
-            # store orientation of foot in 4-th component
             final_swing_foot[3] = step[2]
             if swing_foot == "right":
                 final_swing_foot[2] = rf_pose[2]
@@ -156,11 +142,9 @@ class WalkingMotion(object):
                 lf_pose = final_swing_foot
                 t += t_ss
                 swing_foot = "right"
-            # keep feet static for double support time
             self.rf_traj.segments.append(Constant(t, t + t_ds, rf_pose.copy()))
             self.lf_traj.segments.append(Constant(t, t + t_ds, lf_pose.copy()))
             t += t_ds
-        # Compute whole body trajectory
         ik = InverseKinematics(self.robot)
         configs = list()
         q = q0.copy()
@@ -231,12 +215,8 @@ if __name__ == "__main__":
              np.array([0, -.5, 0.]), np.array([0, -.4, 0.]),
              np.array([0, -.9, 0.]), np.array([0, -.8, 0.]),
              np.array([0, -.9, 0.]), np.array([0, -.4, 0.]),
-                np.array([0, -.5, 0.]), np.array([0, .1, 0.]),
-             np.array([0, -.1, 0.]), np.array([0, .1, 0.]),
-             np.array([.1, .0, np.pi/2]), np.array([-.1, .0, np.pi/2]),
-             np.array([0, .1, np.pi]), np.array([0, -.1, np.pi]),
-
-             ]
+             np.array([0, -.5, 0.]), np.array([0, .1, 0.]),
+             np.array([0, -.1, 0.]), np.array([0, .1, 0.])]
     configs = wm.compute(q, steps)
     for q in configs:
         time.sleep(1e-2)
